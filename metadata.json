@@ -1,0 +1,8 @@
+{
+  "description": "An AI-powered health monitoring application designed to support independent living for elderly and medically vulnerable individuals.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "name": "Medicare Vision AI"
+}

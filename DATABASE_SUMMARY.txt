@@ -1,0 +1,81 @@
+╔══════════════════════════════════════════════════════════════╗
+║         ✅ DATABASE STORAGE - YES, ALL DATA SAVED            ║
+╚══════════════════════════════════════════════════════════════╝
+
+📊 CURRENT STATUS:
+  • Database Type: SQLite3
+  • Location: data/database.sqlite
+  • Size: 16 KB
+  • Total Users Registered: 5
+  • Storage: PERSISTENT (survives app restarts)
+
+👥 USERS IN DATABASE:
+  1. Login Tester (logintest@example.com)
+  2. Test2 (test2@example.com)
+  3. Demo User (demo@medicare.com)
+  4. New User (newuser@test.com)
+  5. Rohith (mkrohith775@gmail.com)
+
+🔐 WHAT'S STORED PER USER:
+  ✓ User ID (UUID)
+  ✓ Email Address
+  ✓ Full Name
+  ✓ Password Hash (bcryptjs - NOT plain text!)
+  ✓ Creation Timestamp
+
+🛡️ SECURITY:
+  ✓ Passwords are HASHED (not stored as plain text!)
+  ✓ bcryptjs hashing with 10 salt rounds
+  ✓ Email is UNIQUE (no duplicate emails)
+  ✓ UUID for user IDs (collision-proof)
+
+⏱️ DATA PERSISTENCE:
+  ✓ Data survives app restarts
+  ✓ Data survives browser refresh
+  ✓ Data survives logout
+  ✓ Data only deleted if database is manually deleted
+
+📋 HOW TO VIEW DATABASE:
+  node check-users.js
+
+═══════════════════════════════════════════════════════════════
+
+TABLE SCHEMA:
+  CREATE TABLE users (
+    id TEXT PRIMARY KEY,
+    email TEXT UNIQUE NOT NULL,
+    name TEXT,
+    passwordHash TEXT NOT NULL,
+    createdAt TEXT NOT NULL
+  )
+
+═══════════════════════════════════════════════════════════════
+
+REGISTRATION FLOW:
+  User enters email, password, name
+         ↓
+  Password hashed with bcryptjs
+         ↓
+  User record inserted into SQLite
+         ↓
+  JWT token generated
+         ↓
+  Token sent to frontend
+         ↓
+  Token stored in localStorage
+         ↓
+  ✅ User logged in
+
+LOGIN FLOW:
+  User enters email, password
+         ↓
+  Query SQLite for user by email
+         ↓
+  Compare password with stored hash
+         ↓
+  If match → Generate JWT → User logged in
+  If no match → "Invalid credentials" error
+
+═══════════════════════════════════════════════════════════════
+
+ANSWER: YES - ALL LOGIN DATA IS STORED IN THE DATABASE! ✅
