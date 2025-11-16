@@ -4,7 +4,7 @@
 
 **Medicare Vision AI** is an innovative healthcare management platform that leverages artificial intelligence to assist elderly patients and their caregivers in managing medications, tracking health metrics, and maintaining optimal nutrition. The platform combines voice interaction, optical character recognition (OCR), and AI-powered analysis to create an intuitive, accessible healthcare companion.
 
-**Project Duration**: 3-6 months  
+  
 **Target Users**: Elderly patients (65+), caregivers, healthcare providers  
 **Technology Stack**: React, TypeScript, Node.js, Google Gemini AI, SQLite
 
