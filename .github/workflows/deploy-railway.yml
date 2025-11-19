@@ -36,12 +36,22 @@ jobs:
         env:
           # Use a Railway Project Token stored in GitHub Secrets as RAILWAY_TOKEN
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          # Optional: specify a target service name via RAILWAY_SERVICE secret
+          RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
         run: |
           # Deploy non-interactively using the Railway CLI. The workflow expects
           # a project-level token (not the account API key) stored as RAILWAY_TOKEN.
-          if [ -n "$RAILWAY_TOKEN" ]; then
-            npx --yes @railway/cli up --ci --detach || (echo "railway up failed - please check project settings" && exit 1)
-          else
+          if [ -z "$RAILWAY_TOKEN" ]; then
             echo "RAILWAY_TOKEN secret is not set; deployment will fail"
             exit 1
+          fi
+
+          # If a specific service is provided, deploy to that service to avoid
+          # ambiguity when the project contains multiple services.
+          if [ -n "$RAILWAY_SERVICE" ]; then
+            echo "Deploying to Railway service: $RAILWAY_SERVICE"
+            npx --yes @railway/cli up --service "$RAILWAY_SERVICE" --ci --detach || (echo "railway up failed - please check project settings" && exit 1)
+          else
+            echo "No RAILWAY_SERVICE provided; attempting to deploy default/linked service"
+            npx --yes @railway/cli up --ci --detach || (echo "railway up failed - please check project settings" && exit 1)
           fi
