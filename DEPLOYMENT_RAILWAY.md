@@ -20,6 +20,13 @@ Notes and troubleshooting
 - If you prefer not to use the Railway CLI, you can connect the GitHub repository directly in the Railway dashboard (recommended for simplest setup).
 - The workflow assumes Node 18 and that `npm ci` works. If your project uses `yarn` or `pnpm`, edit the workflow accordingly.
 
+Using a Dockerfile (recommended for native builds)
+- If your project depends on native modules (for example `better-sqlite3`) or requires a specific Node version (the error logs showed a module requiring Node 20 and Python for node-gyp), adding a Dockerfile ensures the build environment contains the right Node version and build tools.
+- I added a `Dockerfile` that uses Node 20 and installs Python + build-essential so `npm ci` and `npm run build` can succeed during Railway's build. Railway will use your Dockerfile to build the image if present.
+
+Notes about vulnerabilities
+- The base Debian Node images may show reported vulnerabilities in some scanners; that's expected for many base images. If you need to harden the image, consider using a minimal base (e.g., `node:20-slim`) and applying targeted security updates, or use a multi-stage Dockerfile that strips build-time packages out of the final image.
+
 Advanced: deploy a Docker image instead
 - If you prefer deploying a container image, create a workflow that builds/pushes a Docker image to a registry (GitHub Container Registry or Docker Hub) and configure Railway to pull that image.
 
