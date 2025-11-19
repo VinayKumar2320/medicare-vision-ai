@@ -1,4 +1,5 @@
 import type { MealPlan } from '../types';
+import { API_BASE_URL } from '../constants';
 
 export const MealPlanService = {
   generateMealPlanFromReport: async (token: string, file: File): Promise<MealPlan> => {
@@ -12,7 +13,7 @@ export const MealPlanService = {
 
       console.log('📤 Uploading patient report for meal plan generation:', file.name, 'Size:', file.size, 'Type:', file.type);
 
-      const res = await fetch('http://localhost:3001/api/meal-plans/generate', {
+      const res = await fetch(`${API_BASE_URL}/api/meal-plans/generate`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}` 

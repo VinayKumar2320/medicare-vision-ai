@@ -1,9 +1,10 @@
 import type { BloodReport } from '../types';
+import { API_BASE_URL } from '../constants';
 
 export const BloodReportService = {
   getBloodReports: async (token: string): Promise<BloodReport[]> => {
     try {
-      const res = await fetch('http://localhost:3001/api/blood-reports', {
+      const res = await fetch(`${API_BASE_URL}/api/blood-reports`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -37,7 +38,7 @@ export const BloodReportService = {
       console.log('📤 Uploading blood report file:', file.name, 'Size:', file.size, 'Type:', file.type);
       console.log('🔑 Using token:', token.substring(0, 20) + '...');
 
-      const res = await fetch('http://localhost:3001/api/blood-reports/upload', {
+      const res = await fetch(`${API_BASE_URL}/api/blood-reports/upload`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}` 
@@ -73,7 +74,7 @@ export const BloodReportService = {
   
   deleteBloodReport: async (token: string, reportId: string) => {
     try {
-      const res = await fetch(`http://localhost:3001/api/blood-reports/${reportId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/blood-reports/${reportId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

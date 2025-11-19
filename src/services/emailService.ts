@@ -1,8 +1,10 @@
+import { API_BASE_URL } from '../constants';
+
 export const EmailService = {
   sendEmail: async (toEmail: string, subject: string, textBody: string, htmlBody?: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      // Use local proxy server to avoid CORS issues
-      const proxyUrl = 'http://localhost:3001/api/send-email';
+      // Use API base URL for email endpoint
+      const proxyUrl = `${API_BASE_URL}/api/send-email`;
       
       const response = await fetch(proxyUrl, {
         method: 'POST',

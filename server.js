@@ -22,14 +22,36 @@ const __dirname = dirname(__filename);
 dotenv.config({ path: join(__dirname, '.env.local') });
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Middleware
-app.use(cors());
+// CORS configuration - allow requests from frontend
+// In production, if frontend and backend are on same domain, allow all origins
+// Otherwise, use FRONTEND_URL environment variable
+const corsOptions = {
+  origin: process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL.split(',')  // Support multiple origins
+    : (NODE_ENV === 'production' ? true : 'http://localhost:4000'),  // In production, allow all if same domain
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// API Routes - must come before static file serving
+app.use('/api', authRoutes);
+app.use('/api', emailRoutes);
+app.use('/api/prescriptions', prescriptionRoutes);
+app.use('/api/blood-reports', bloodReportRoutes);
+app.use('/api/meal-plans', mealPlanRoutes);
 
 // Serve uploaded files with absolute path
 const uploadsPath = join(__dirname, 'uploads');
+// Ensure uploads directory exists
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath, { recursive: true });
+}
 app.use('/uploads', express.static(uploadsPath, {
   setHeaders: (res, path) => {
     // Set proper content type for PDFs
@@ -40,12 +62,21 @@ app.use('/uploads', express.static(uploadsPath, {
   }
 }));
 
-// Routes
-app.use('/api', authRoutes);
-app.use('/api', emailRoutes);
-app.use('/api/prescriptions', prescriptionRoutes);
-app.use('/api/blood-reports', bloodReportRoutes);
-app.use('/api/meal-plans', mealPlanRoutes);
+// Serve static files from React app in production (must come after API routes)
+if (NODE_ENV === 'production') {
+  const distPath = join(__dirname, 'dist');
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    // Handle React routing - return all requests to React app
+    app.get('*', (req, res) => {
+      // Don't serve index.html for API routes or uploads
+      if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+      res.sendFile(join(distPath, 'index.html'));
+    });
+  }
+}
 
 console.log('Auth routes registered: /api/register, /api/login, /api/me');
 console.log('Prescription routes registered: /api/prescriptions (GET, POST, DELETE), /api/prescriptions/upload (POST with OCR)');
@@ -83,7 +114,10 @@ app.get('/__routes', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Email server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT} (${NODE_ENV} mode)`);
+  if (NODE_ENV === 'production') {
+    console.log(`📦 Serving static files from /dist`);
+  }
   console.log('\n📧 Email Configuration:');
   if (process.env.RESEND_API_KEY) {
     console.log('  ✅ Resend API configured');

@@ -1,7 +1,9 @@
+import { API_BASE_URL } from '../constants';
+
 export const AuthService = {
   register: async (email: string, password: string, name: string) => {
     try {
-      const res = await fetch('http://localhost:3001/api/register', {
+      const res = await fetch(`${API_BASE_URL}/api/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name })
@@ -27,7 +29,7 @@ export const AuthService = {
   },
   login: async (email: string, password: string) => {
     try {
-      const res = await fetch('http://localhost:3001/api/login', {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -53,7 +55,7 @@ export const AuthService = {
   },
   getMe: async (token: string) => {
     try {
-      const res = await fetch('http://localhost:3001/api/me', {
+      const res = await fetch(`${API_BASE_URL}/api/me`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });

@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
         'process.env.MAILJET_SECRET_KEY': JSON.stringify(env.MAILJET_SECRET_KEY || env.MAILJET_API_KEY),
         'process.env.MAILJET_FROM_EMAIL': JSON.stringify(env.MAILJET_FROM_EMAIL || 'noreply@medicarevisionai.com')
       },
+      envPrefix: 'VITE_',
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
