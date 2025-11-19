@@ -32,21 +32,16 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Login to Railway
+      - name: Deploy to Railway (non-interactive)
         env:
-          RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+          # Use a Railway Project Token stored in GitHub Secrets as RAILWAY_TOKEN
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
-          # Prefer passing the key via env — railway login supports a token flag
-          if [ -n "$RAILWAY_API_KEY" ]; then
-            railway login --apiKey "$RAILWAY_API_KEY" || railway login --token "$RAILWAY_API_KEY"
+          # Deploy non-interactively using the Railway CLI. The workflow expects
+          # a project-level token (not the account API key) stored as RAILWAY_TOKEN.
+          if [ -n "$RAILWAY_TOKEN" ]; then
+            npx --yes @railway/cli up --ci --detach || (echo "railway up failed - please check project settings" && exit 1)
           else
-            echo "RAILWAY_API_KEY secret is not set; deployment will fail"
+            echo "RAILWAY_TOKEN secret is not set; deployment will fail"
             exit 1
           fi
-
-      - name: Deploy to Railway
-        run: |
-          # Deploy the repository to Railway. The first time this runs you may need
-          # to connect the repository to a Railway project or provide a project id.
-          # The CLI will attempt to deploy the current directory.
-          railway up --yes || (echo "railway up failed - please check project settings" && exit 1)

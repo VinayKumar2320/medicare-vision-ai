@@ -6,12 +6,14 @@ What the workflow does
 - On push to `main`, the workflow installs dependencies, builds the frontend (if a `build` script exists), installs the Railway CLI, logs in using a repo secret, and runs `railway up` to deploy.
 
 Required repository secret
-- `RAILWAY_API_KEY` — an API key from your Railway account. You can create one in Railway under Account Settings -> API Keys. Add it in GitHub: `Settings` -> `Secrets and variables` -> `Actions` -> `New repository secret`.
+- `RAILWAY_TOKEN` — a Project Token from your Railway project (preferred for non-interactive CI deploys). Create it in Railway under your Project Settings -> Tokens (or Project Tokens) and add it in GitHub: `Settings` -> `Secrets and variables` -> `Actions` -> `New repository secret`.
+
+Note: An account-level API key (sometimes called `RAILWAY_API_KEY`) may not allow non-interactive `railway up` deploys in CI; prefer creating and using a project-scoped token named `RAILWAY_TOKEN`.
 
 How to connect the repo to Railway
 1. Sign in to Railway (https://railway.app).
 2. Create a new project and choose the option to connect an existing GitHub repo (or create a project and deploy from CLI).
-3. If you choose to connect the repo through the Railway web UI, Railway can deploy on pushes automatically. If you prefer deployment via Actions (this repo's workflow), create an API key and add the `RAILWAY_API_KEY` secret to GitHub.
+3. If you choose to connect the repo through the Railway web UI, Railway can deploy on pushes automatically. If you prefer deployment via Actions (this repo's workflow), create a Project Token and add it to GitHub as `RAILWAY_TOKEN`.
 
 Notes and troubleshooting
 - If the first run of the workflow fails, check the Actions logs in GitHub — the Railway CLI may require an initial interactive connection or a project id. You can run `railway init` locally to create or link a project and commit the generated `.railway` files if you want the workflow to deploy to that specific project.
